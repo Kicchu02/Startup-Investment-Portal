@@ -14,11 +14,16 @@ import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static String EMAIL;
 
     EditText email, password;
     Button login;
     TextView newUser;
     DatabaseHandler databaseHandler;
+
+    public static String getEMAIL() {
+        return EMAIL;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
 //                Check record and display appropriate message
             if (databaseHandler.isValidLogin(strEmail, strPassword)) {
                 Toast.makeText(LoginActivity.this, "Logged in successfully", Toast.LENGTH_SHORT).show();
-//                EMAIL = strEmail;
+                EMAIL = strEmail;
                 startActivity(new Intent(LoginActivity.this, ViewIdeasActivity.class));
             } else {
                 Toast.makeText(LoginActivity.this, "Invalid Email or Password", Toast.LENGTH_SHORT).show();
@@ -56,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
         newUser.setOnClickListener(v -> {
             email.setText("");
             password.setText("");
-            Intent loginToRegister = new Intent(this, ViewIdeasActivity.class);
+            Intent loginToRegister = new Intent(this, SignUpActivity.class);
             startActivity(loginToRegister);
         });
 

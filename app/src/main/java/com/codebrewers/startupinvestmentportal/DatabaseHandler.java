@@ -29,7 +29,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String queryForIdeasTable = "CREATE TABLE ideas(" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "image BLOB, " +
+                "title TEXT, " +
+//                "image BLOB, " +
                 "short_des TEXT, " +
                 "long_des TEXT, " +
                 "email TEXT, " +
@@ -84,25 +85,55 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return res != -1;
     }
 
-    public boolean postIdea(Image image, String short_des, String long_des, String email) {
-        return  false;
+    public boolean postIdea(Image image, String title, String short_des, String long_des, String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("image", image.toString());
+        values.put("title", title);
+        values.put("short_des", short_des);
+        values.put("long_des", long_des);
+        values.put("email", email);
+
+        long res = db.insert("ideas", null, values);
+
+        db.close();
+
+        return res != -1;
+    }
+
+    public boolean postIdea() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+//        values.put("image", (String) null);
+        values.put("title", "Example Title");
+        values.put("short_des", "Example Short Description");
+        values.put("long_des", "Example Long Description");
+        values.put("email", "Example Email");
+
+        long res = db.insert("ideas", null, values);
+
+        db.close();
+
+        return res != -1;
     }
 
     public ArrayList<Ideas> getIdeas() {
-        SQLiteDatabase db = getReadableDatabase();
-        String query = "SELECT * " +
-                "FROM ideas;";
-
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM ideas";
         Cursor cursor = db.rawQuery(query, null);
+
         ArrayList<Ideas> ideas = new ArrayList<>();
 
         if (cursor.moveToFirst()) {
             do {
                 ideas.add(new Ideas(
                         cursor.getInt(1),
-                        cursor.getString(3),
+                        cursor.getString(2),
                         cursor.getString(4),
-                        cursor.getString(5)
+                        cursor.getString(5),
+                        cursor.getString(6)
                 ));
             } while (cursor.moveToNext());
         }
