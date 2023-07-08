@@ -30,7 +30,7 @@ public class DetailedIdeaActivity extends AppCompatActivity {
 
         title.setText(IDEA.getTitle());
         longDescription.setText(IDEA.getLongDescription());
-        contact.setText(IDEA.getEmail() + "\n" + IDEA.getPhone());
+        contact.setText(IDEA.getEmail() + "\n\n" + IDEA.getPhone());
 
         if (IDEA.getImage() == null) {
             return;

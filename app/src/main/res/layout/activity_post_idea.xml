@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PostIdeaActivity">
+    tools:context=".PostIdeaActivity"
+    android:background="@drawable/bg3">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -20,10 +21,14 @@
                 android:id="@+id/editTextTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="15dp"
                 android:ems="10"
-                android:inputType="text"
+                android:gravity="center"
                 android:hint="Title"
-                android:layout_margin="20dp"/>
+                android:inputType="text"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#BFFFFFFF"
+                android:textSize="24sp" />
 
             <ImageView
                 android:id="@+id/imageViewPreview"
@@ -35,32 +40,41 @@
                 android:id="@+id/buttonChooseImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:elevation="10dp"
                 android:text="Choose Image"
-                android:layout_margin="20dp"/>
+                android:textColor="#FFFFFF" />
 
             <EditText
                 android:id="@+id/editTextShortDescription"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:hint="Write a short description"
-                android:layout_margin="20dp"/>
+                android:textColor="#FFFFFF"
+                android:textColorHint="#BFFFFFFF" />
 
             <EditText
                 android:id="@+id/editTextLongDescription"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
+                android:layout_margin="10dp"
                 android:ems="10"
                 android:gravity="start|top"
-                android:inputType="textMultiLine"
                 android:hint="Write a detailed description"
-                android:layout_margin="20dp"/>
+                android:inputType="textMultiLine"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#BFFFFFFF" />
 
             <Button
                 android:id="@+id/buttonPostIdea"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
-                android:text="Post Idea" />
+                android:layout_marginTop="20dp"
+                android:elevation="10dp"
+                android:text="Post Idea"
+                android:textColor="#FFFFFF" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

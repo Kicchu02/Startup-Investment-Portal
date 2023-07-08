@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg3"
     android:textAlignment="center"
     tools:context=".DetailedIdeaActivity">
 
@@ -25,7 +26,9 @@
                 android:layout_margin="20dp"
                 android:text="Title"
                 android:textAlignment="center"
-                android:textSize="48sp" />
+                android:textColor="#FFFFFF"
+                android:textSize="48sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/imageView"
@@ -40,6 +43,7 @@
                 android:layout_margin="20dp"
                 android:text="Detailed Description"
                 android:textAlignment="viewStart"
+                android:textColor="#FFFFFF"
                 android:textSize="24sp" />
 
             <TextView
@@ -49,6 +53,7 @@
                 android:layout_margin="20dp"
                 android:text="Contact Details"
                 android:textAlignment="center"
+                android:textColor="#FFFFFF"
                 android:textSize="20sp" />
         </LinearLayout>
     </ScrollView>
