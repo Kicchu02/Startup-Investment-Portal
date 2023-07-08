@@ -4,12 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -19,15 +20,35 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
 
 public class PostIdeaActivity extends AppCompatActivity {
-
-    private static final int SELECT_IMAGE = 200;
-
     Button chooseImage, postIdea;
     EditText title, shortDesc, longDesc;
+    ImageView imageView;
 
     DatabaseHandler databaseHandler;
 
-    @SuppressLint("MissingInflatedId")
+    ActivityResultLauncher<Intent> launchSomeActivity = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    // do your operation from here....
+                    if (data != null && data.getData() != null) {
+                        Uri selectedImageUri = data.getData();
+                        Bitmap selectedImageBitmap;
+                        try {
+                            selectedImageBitmap = MediaStore.Images.Media.getBitmap(
+                                    this.getContentResolver(),
+                                    selectedImageUri
+                            );
+                            imageView.setImageBitmap(selectedImageBitmap);
+                        }
+                        catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,82 +59,49 @@ public class PostIdeaActivity extends AppCompatActivity {
         title = findViewById(R.id.editTextTitle);
         shortDesc = findViewById(R.id.editTextShortDescription);
         longDesc = findViewById(R.id.editTextLongDescription);
+        imageView = findViewById(R.id.imageViewPreview);
 
-        chooseImage.setOnClickListener(v -> {
-            Intent i = new Intent();
-            i.setType("image/");
-            i.setAction(Intent.ACTION_GET_CONTENT);
+        databaseHandler = new DatabaseHandler(PostIdeaActivity.this);
 
-            launchSomeActivity.launch(i);
+        chooseImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageChooser();
+            }
         });
 
-        postIdea.setOnClickListener(v -> {
-//            Image image = null;
-//            String strTitle = String.valueOf(title.getText());
-//            String strShortDesc = String.valueOf(shortDesc.getText());
-//            String strLongDesc = String.valueOf(longDesc.getText());
-//            String strEmail = LoginActivity.getEMAIL();
-//
-//            if (!checkFieldsValidity(strTitle, strShortDesc, strLongDesc)) {
-//                Toast.makeText(PostIdeaActivity.this, "Please Fill All The Fields", Toast.LENGTH_SHORT).show();
-//                return;
-//            }
-//
-//            if (databaseHandler.postIdea(image, strTitle, strShortDesc, strLongDesc, strEmail)) {
-//                Toast.makeText(PostIdeaActivity.this, "Posted New Idea", Toast.LENGTH_SHORT).show();
-//                finish();
-//            } else {
-//                Toast.makeText(PostIdeaActivity.this, "Something Went Wrong!!!\nCouldn't Post Idea", Toast.LENGTH_SHORT).show();
-//            }
-            
-            // TEMP
-            if (databaseHandler.postIdea()) {
-                Toast.makeText(this, "Temporary Idea Posted", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Not Posted", Toast.LENGTH_SHORT).show();
+        postIdea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String strTitle = String.valueOf(title.getText());
+                String strShortDesc = String.valueOf(shortDesc.getText());
+                String strLongDesc = String.valueOf(longDesc.getText());
+                
+                if (!checkFieldsValidity(strTitle, strShortDesc, strLongDesc)) {
+                    Toast.makeText(PostIdeaActivity.this, "Please fill in all the fields", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (databaseHandler.postIdea(strTitle, imageView, strShortDesc, strLongDesc, LoginActivity.getEMAIL())) {
+                    Toast.makeText(PostIdeaActivity.this, "Idea Posted Successfully", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(PostIdeaActivity.this, "Failed to Post Idea", Toast.LENGTH_SHORT).show();
+                }
+
+                finish();
             }
-            ////
         });
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    private void imageChooser() {
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
 
-        if (requestCode == RESULT_OK) {
-            Toast.makeText(this, "Image Selected", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+        launchSomeActivity.launch(i);
     }
 
     private static boolean checkFieldsValidity(String title, String shortDesc, String longDesc) {
         return !title.isEmpty() && !shortDesc.isEmpty() && !longDesc.isEmpty();
     }
-
-    ActivityResultLauncher<Intent> launchSomeActivity
-            = registerForActivityResult(
-            new ActivityResultContracts
-                    .StartActivityForResult(),
-            result -> {
-                if (result.getResultCode()
-                        == Activity.RESULT_OK) {
-                    Intent data = result.getData();
-                    // do your operation from here....
-                    if (data != null
-                            && data.getData() != null) {
-                        Uri selectedImageUri = data.getData();
-                        Bitmap selectedImageBitmap;
-                        try {
-                            selectedImageBitmap
-                                    = MediaStore.Images.Media.getBitmap(
-                                    this.getContentResolver(),
-                                    selectedImageUri);
-                        }
-                        catch (IOException e) {
-                            e.printStackTrace();
-                        }
-//                        imageView.setImageBitmap(
-//                                selectedImageBitmap);
-                    }
-                }
-            });
 }

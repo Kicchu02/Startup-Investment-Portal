@@ -5,8 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
+import android.widget.ImageView;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
@@ -28,9 +32,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 ");";
 
         String queryForIdeasTable = "CREATE TABLE ideas(" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+//                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "title TEXT, " +
-//                "image BLOB, " +
+                "image BLOB, " +
                 "short_des TEXT, " +
                 "long_des TEXT, " +
                 "email TEXT, " +
@@ -85,55 +89,44 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return res != -1;
     }
 
-    public boolean postIdea(Image image, String title, String short_des, String long_des, String email) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
+    public boolean postIdea(String title, ImageView image, String short_des, String long_des, String email) {
+        Bitmap bitmap = ((BitmapDrawable)image.getDrawable()).getBitmap();
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] bytes = byteArrayOutputStream.toByteArray();
 
-        values.put("image", image.toString());
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
         values.put("title", title);
+        values.put("image", bytes);
         values.put("short_des", short_des);
         values.put("long_des", long_des);
         values.put("email", email);
 
         long res = db.insert("ideas", null, values);
 
-        db.close();
-
-        return res != -1;
-    }
-
-    public boolean postIdea() {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-//        values.put("image", (String) null);
-        values.put("title", "Example Title");
-        values.put("short_des", "Example Short Description");
-        values.put("long_des", "Example Long Description");
-        values.put("email", "Example Email");
-
-        long res = db.insert("ideas", null, values);
-
-        db.close();
-
         return res != -1;
     }
 
     public ArrayList<Ideas> getIdeas() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM ideas";
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT i.title, i.image, i.short_des, i.long_des, i.email, u.contact " +
+                "FROM ideas i, users u " +
+                "WHERE i.email = u.email;";
         Cursor cursor = db.rawQuery(query, null);
 
-        ArrayList<Ideas> ideas = new ArrayList<>();
+        ArrayList<Ideas> ideas = new ArrayList<>(cursor.getCount());
 
         if (cursor.moveToFirst()) {
             do {
                 ideas.add(new Ideas(
-                        cursor.getInt(1),
+                        cursor.getString(0),
+                        cursor.getBlob(1),
                         cursor.getString(2),
+                        cursor.getString(3),
                         cursor.getString(4),
-                        cursor.getString(5),
-                        cursor.getString(6)
+                        cursor.getLong(5)
                 ));
             } while (cursor.moveToNext());
         }

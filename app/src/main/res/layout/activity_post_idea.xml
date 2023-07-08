@@ -25,6 +25,12 @@
                 android:hint="Title"
                 android:layout_margin="20dp"/>
 
+            <ImageView
+                android:id="@+id/imageViewPreview"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                app:srcCompat="@drawable/no_image" />
+
             <Button
                 android:id="@+id/buttonChooseImage"
                 android:layout_width="wrap_content"

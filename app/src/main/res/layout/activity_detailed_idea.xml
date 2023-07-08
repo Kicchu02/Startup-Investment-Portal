@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:text="Detailed Description"
-                android:textAlignment="center"
+                android:textAlignment="viewStart"
                 android:textSize="24sp" />
 
             <TextView

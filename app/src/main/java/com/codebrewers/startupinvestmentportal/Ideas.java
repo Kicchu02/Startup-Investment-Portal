@@ -1,26 +1,40 @@
 package com.codebrewers.startupinvestmentportal;
 
+import android.media.Image;
+
+import java.util.Arrays;
+
 public class Ideas {
-    private int id;
     private String title;
+    private byte[] image;
     private String shortDescription;
     private String longDescription;
     private String email;
+    private long phone;
 
-    public Ideas(int id, String title, String shortDescription, String longDescription, String email) {
-        this.id = id;
+    public Ideas(String title, byte[] image, String shortDescription, String longDescription, String email, long phone) {
         this.title = title;
+        this.image = image;
         this.shortDescription = shortDescription;
         this.longDescription = longDescription;
         this.email = email;
+        this.phone = phone;
     }
 
-    public int getId() {
-        return id;
+    public String getTitle() {
+        return title;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     public String getShortDescription() {
@@ -47,22 +61,23 @@ public class Ideas {
         this.email = email;
     }
 
-    public String getTitle() {
-        return title;
+    public long getPhone() {
+        return phone;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setPhone(long phone) {
+        this.phone = phone;
     }
 
     @Override
     public String toString() {
         return "Ideas{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
+                "title='" + title + '\'' +
+                ", image=" + Arrays.toString(image) +
                 ", shortDescription='" + shortDescription + '\'' +
                 ", longDescription='" + longDescription + '\'' +
                 ", email='" + email + '\'' +
+                ", phone=" + phone +
                 '}';
     }
 }
